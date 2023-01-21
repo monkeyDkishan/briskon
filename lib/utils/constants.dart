@@ -11,6 +11,7 @@ Color kBGColor = Colors.white;
 // Routes
 String kInitialRoute = '/';
 String kLoginRoute = '/LoginScreen';
+String kVerifyOTPRoute = '/VerifyOTPScreen';
 String kRegisterRoute = '/RegisterScreen';
 String kHomeRoute = '/HomeScreen';
 String kAddEnquiryRoute = '/AddEnquiryScreen';

@@ -5,16 +5,17 @@ import '../common/auth_bg.dart';
 import '../common/auth_button.dart';
 import '../common/auth_text_field.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class VerifyOTPScreen extends StatefulWidget {
+  const VerifyOTPScreen({Key? key}) : super(key: key);
 
+  @override
+  State<VerifyOTPScreen> createState() => _VerifyOTPScreenState();
+}
+
+class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -39,10 +40,22 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 3.h),
-                  AuthTextField(prefix: Assets.phoneIcon(width: 20.sp), hint: "Phone"),
+                  AuthTextField(prefix: Assets.passwordIcon(width: 20.sp), hint: "OTP"),
+                  SizedBox(height: 1.h),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: (){
 
+                      },
+                      child: SizedBox(
+                        height: 20.sp,
+                        child: Text("ReSend",style: TextStyleConstant.textStyleFont500FontSize12ColorBlackOP05,),
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 2.h),
-                  AuthButton(title: "Send OTP",onTap: () {
+                  AuthButton(title: "Verify OTP",onTap: () {
                     Navigator.of(context).pushNamed(kHomeRoute);
                   }),
                   SizedBox(height: 1.h),

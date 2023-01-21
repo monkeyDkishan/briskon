@@ -5,6 +5,7 @@ import 'package:briskon/utils.dart';
 import 'package:briskon/view/applications/application_view.dart';
 import 'package:briskon/view/auth/login.dart';
 import 'package:briskon/view/auth/signup.dart';
+import 'package:briskon/view/auth/verify_otp.dart';
 import 'package:briskon/view/certificates/certificates_list.dart';
 import 'package:briskon/view/contact_us/contact_us_view.dart';
 import 'package:briskon/view/distributors/our_distributors.dart';
@@ -61,6 +62,7 @@ Widget app(){
       routes: {
         kInitialRoute: (context) => const LendingScreen(),
         kLoginRoute: (context) => const LoginScreen(),
+        kVerifyOTPRoute: (context) => const VerifyOTPScreen(),
         kRegisterRoute: (context) => const SignupScreen(),
         kHomeRoute: (context) => const HomeScreen(),
         kAddEnquiryRoute: (context) => const AddEnquiryBasicDetailsScreen(),

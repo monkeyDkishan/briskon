@@ -72,10 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Product Quality"),));
                       return;
                     } else if(menu.route == "brochure") {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Product Quality"),));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Brochure"),));
                       return;
                     } else if(menu.route == "about_us") {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_brochure.pdf", title: "Product Quality"),));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_brochure.pdf", title: "About Us"),));
                       return;
                     }
 

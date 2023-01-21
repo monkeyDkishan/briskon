@@ -1,3 +1,4 @@
+import 'package:briskon/view/success/success_view.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils.dart';
@@ -145,9 +146,15 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                   Widget yesButton = TextButton(
                     child: const Text("YES"),
                     onPressed: () {
-                      Navigator.of(context).popUntil((route) {
-                        return route.settings.name == kHomeRoute;
-                      });
+
+                      Navigator.of(context).push(PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) {
+                        return SuccessView(onFinish: () {
+                          Navigator.of(context).popUntil((route) {
+                            return route.settings.name == kHomeRoute;
+                          });
+                        });
+                      },fullscreenDialog: true,opaque: true));
+
                     },
                   );
 
