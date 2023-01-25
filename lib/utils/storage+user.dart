@@ -1,32 +1,37 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../model/user/user_model.dart';
-
 class UserStorage {
 
   static UserStorage shared = UserStorage();
 
   late final SharedPreferences _pref;
 
-  UserStorage() {
-    setUserPref();
+  Future userStorage() async {
+    await setUserPref();
   }
 
   setUserPref() async {
     _pref = await SharedPreferences.getInstance();
   }
 
-  UserModel get user  {
-    final userId = _pref.getInt("userId");
-    final token = _pref.getString("token");
+  bool get isLogin  {
+    final isLogin = _pref.getBool("isLogin") ?? false;
 
-    return UserModel(userId: userId,token: token);
+    return isLogin;
   }
 
-  set user(UserModel user)  {
-
-    _pref.setInt("userId", user.userId ?? 0);
-    _pref.setString("token", user.token ?? "");
-
+  set isLogin(bool isLogin)  {
+    _pref.setBool("isLogin", isLogin);
   }
+
+  bool get isGuest  {
+    final isGuest = _pref.getBool("isGuest") ?? false;
+
+    return isGuest;
+  }
+
+  set isGuest(bool isGuest)  {
+    _pref.setBool("isGuest", isGuest);
+  }
+
 }

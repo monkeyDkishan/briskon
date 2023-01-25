@@ -1,7 +1,10 @@
+import 'package:briskon/provider/auth_provider.dart';
 import 'package:briskon/utils.dart';
 import 'package:briskon/view/auth/login.dart';
+import 'package:briskon/view/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 
 class LendingScreen extends StatefulWidget {
@@ -24,10 +27,18 @@ class _LendingScreenState extends State<LendingScreen> {
 
     fillTheCommonSizeINIT();
 
+    final authProvider = context.watch<AuthProvider>();
+
+    if(authProvider.isLogin || authProvider.isGuest) {
+      return const HomeScreen();
+    } else {
+      return const LoginScreen();
+    }
+
     return FutureBuilder(builder: (context, snapshot) {
 
       if(snapshot.hasData) {
-        return const LoginScreen();
+
       } else {
         return Container(
           color: Colors.white,

@@ -33,125 +33,127 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Assets.briskonLogo),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 20.sp),
+        child: SafeArea(
+          child: Column(
+            children: [
+              SizedBox(height: 20.sp),
 
-            CarouselSlider.builder(
-              itemCount: bannerIndexName.length,
-              itemBuilder: (context, index, realIndex) {
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(5),
-                    child: Image.asset("assets/images/banner-$index.png",fit: BoxFit.cover,));
-              },
-              options: CarouselOptions(height: 180.sp, viewportFraction: 0.9,autoPlay: true),
-            ),
-
-            GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.all(30.sp),
-              shrinkWrap: true,
-              itemCount: MenuModel.menus.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisSpacing: 6.sp,
-                mainAxisSpacing: 6.sp,
-                crossAxisCount: SizerUtil.gridCount,
-                childAspectRatio: 181/140
+              CarouselSlider.builder(
+                itemCount: bannerIndexName.length,
+                itemBuilder: (context, index, realIndex) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                      child: Image.asset("assets/images/banner-$index.png",fit: BoxFit.cover,));
+                },
+                options: CarouselOptions(height: 170.sp, viewportFraction: 0.9,autoPlay: true),
               ),
-              itemBuilder: (context, index) {
 
-                final menu = MenuModel.menus.firstWhere((element) => element.order == index);
+              GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 15.sp),
+                shrinkWrap: true,
+                itemCount: MenuModel.menus.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisSpacing: 6.sp,
+                  mainAxisSpacing: 6.sp,
+                  crossAxisCount: SizerUtil.gridCount,
+                  childAspectRatio: 181/140
+                ),
+                itemBuilder: (context, index) {
 
-                final isSelected = selectedMenu == menu.order;
+                  final menu = MenuModel.menus.firstWhere((element) => element.order == index);
 
-                return InkWell(
-                  splashColor: kPrimaryColor,
-                  onTap: () {
+                  final isSelected = selectedMenu == menu.order;
 
-                    if(menu.route == "product_quality") {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Product Quality"),));
-                      return;
-                    } else if(menu.route == "brochure") {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Brochure"),));
-                      return;
-                    } else if(menu.route == "about_us") {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_brochure.pdf", title: "About Us"),));
-                      return;
-                    }
+                  return InkWell(
+                    splashColor: kPrimaryColor,
+                    onTap: () {
 
-                    Navigator.of(context).pushNamed(menu.route);
-                  },
-                  onTapDown: (details) {
-                    setState(() {
-                      selectedMenu = menu.order;
-                    });
-                  },
-                  onTapUp: (details) {
-                    // setState(() {
-                    //   selectedMenu = -1;
-                    // });
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isSelected ? kPrimaryColor : Colors.white,
-                      border: Border.all(color: kFontGrayColor.withOpacity(0.25)),
-                      borderRadius: BorderRadius.circular(2),
-                      boxShadow: [
-                        if(isSelected)
-                        BoxShadow(
-                          color: kPrimaryColor.withOpacity(0.5),
-                          blurRadius: 15,
-                          spreadRadius: 1
-                        )
-                      ]
-                    ),
-                    child: Stack(
-                      children: [
+                      if(menu.route == "product_quality") {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Product Quality"),));
+                        return;
+                      } else if(menu.route == "brochure") {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Brochure"),));
+                        return;
+                      } else if(menu.route == "about_us") {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_brochure.pdf", title: "About Us"),));
+                        return;
+                      }
 
-                        if(isSelected)
-                        Padding(
-                          padding: EdgeInsets.only(top: 15.sp,right: 20.sp),
-                          child: Image.asset(
-                              "assets/images/img-menu-grid-steel-bar.png",
-                              fit: BoxFit.contain,
-                            colorBlendMode: BlendMode.darken,
-                            color: kPrimaryColor,
+                      Navigator.of(context).pushNamed(menu.route);
+                    },
+                    onTapDown: (details) {
+                      setState(() {
+                        selectedMenu = menu.order;
+                      });
+                    },
+                    onTapUp: (details) {
+                      // setState(() {
+                      //   selectedMenu = -1;
+                      // });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isSelected ? kPrimaryColor : Colors.white,
+                        border: Border.all(color: kFontGrayColor.withOpacity(0.25)),
+                        borderRadius: BorderRadius.circular(2),
+                        boxShadow: [
+                          if(isSelected)
+                          BoxShadow(
+                            color: kPrimaryColor.withOpacity(0.5),
+                            blurRadius: 15,
+                            spreadRadius: 1
+                          )
+                        ]
+                      ),
+                      child: Stack(
+                        children: [
+
+                          if(isSelected)
+                          Padding(
+                            padding: EdgeInsets.only(top: 15.sp,right: 20.sp),
+                            child: Image.asset(
+                                "assets/images/img-menu-grid-steel-bar.png",
+                                fit: BoxFit.contain,
+                              colorBlendMode: BlendMode.darken,
+                              color: kPrimaryColor,
+                            ),
                           ),
-                        ),
 
-                        Padding(
-                          padding: EdgeInsets.all(15.sp),
-                          child: Column(
-                            children: [
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: SizedBox(
-                                  width: 64.sp,
-                                  height: 64.sp,
-                                  child: menu.svgIcon(isSelected),
+                          Padding(
+                            padding: EdgeInsets.all(15.sp),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: SizedBox(
+                                    width: 64.sp,
+                                    height: 64.sp,
+                                    child: menu.svgIcon(isSelected),
+                                  ),
                                 ),
-                              ),
-                              const Spacer(),
-                              Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(menu.title,
-                                      style: TextStyleConstant
-                                          .textStyleFont400FontSize16
-                                          .copyWith(
-                                        color: isSelected ? Colors.white : kFontGrayColor,
-                                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                                        fontSize: isSelected ? 18.sp : 16.sp,
-                                      )))
-                            ],
+                                const Spacer(),
+                                Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text(menu.title,
+                                        style: TextStyleConstant
+                                            .textStyleFont400FontSize16
+                                            .copyWith(
+                                          color: isSelected ? Colors.white : kFontGrayColor,
+                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                          fontSize: isSelected ? 18.sp : 16.sp,
+                                        )))
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            )
-          ],
+                  );
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

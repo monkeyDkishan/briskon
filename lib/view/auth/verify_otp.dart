@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:briskon/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/auth_provider.dart';
 import '../common/auth_bg.dart';
 import '../common/auth_button.dart';
 import '../common/auth_text_field.dart';
@@ -13,8 +17,59 @@ class VerifyOTPScreen extends StatefulWidget {
 }
 
 class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
+
+  bool canSendOTP = false;
+
+  int time = 30;
+
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    setupTimer();
+
+  }
+
+  @override
+  dispose() {
+    controller.dispose();
+    super.dispose();
+
+  }
+
+  setupTimer() {
+    setState(() {
+      canSendOTP = false;
+      time = 30;
+    });
+
+    const oneSec = Duration(seconds: 1);
+     Timer.periodic(
+      oneSec,
+          (Timer timer) {
+        if (time == 0) {
+          setState(() {
+            canSendOTP = true;
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            time--;
+          });
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final authProvider = context.watch<AuthProvider>();
+    final res = authProvider.resVerifyOtp;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -26,13 +81,13 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
                 children: [
                   Column(
                     children: [
-                      Text("Sign In", style: TextStyle(
+                      Text("Verify OTP", style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 20.sp,
                           color: kPrimaryColor
                       ),),
                       SizedBox(height: 1.h),
-                      Text("Welcome back", style: TextStyle(
+                      Text("You must have received an OTP on ${authProvider.enteredMobile}", style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16.sp,
                           color: kSecondaryTitleColor
@@ -40,50 +95,52 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
                     ],
                   ),
                   SizedBox(height: 3.h),
-                  AuthTextField(prefix: Assets.passwordIcon(width: 20.sp), hint: "OTP"),
+                  AuthTextField(prefix: Assets.passwordIcon(width: 20.sp), hint: "OTP",controller: controller),
                   SizedBox(height: 1.h),
                   Align(
                     alignment: Alignment.topRight,
-                    child: InkWell(
-                      onTap: (){
+                    child: Opacity(
+                      opacity: canSendOTP ? 1.0 : 0.5,
+                      child: InkWell(
+                        onTap: !canSendOTP ? null : () async {
 
-                      },
-                      child: SizedBox(
-                        height: 20.sp,
-                        child: Text("ReSend",style: TextStyleConstant.textStyleFont500FontSize12ColorBlackOP05,),
+                          try {
+                            await authProvider.sendOTP(mobile: authProvider.enteredMobile);
+                          } catch (e) {
+                            Toaster.showMessage(context, msg: e.toString());
+                          }
+
+                          setupTimer();
+                        },
+                        child: SizedBox(
+                          height: 20.sp,
+                          child: Text(canSendOTP ? "Re Send OTP" : "00:$time",style: TextStyleConstant.textStyleFont500FontSize12ColorBlackOP05,),
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(height: 2.h),
-                  AuthButton(title: "Verify OTP",onTap: () {
-                    Navigator.of(context).pushNamed(kHomeRoute);
-                  }),
-                  SizedBox(height: 1.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Don’t have an account?",style: TextStyleConstant.textStyleFont500FontSize14ColorBlackOP05,),
-                      TextButton(onPressed: (){
+                  AuthButton(title: "Verify OTP",onTap: () async {
+
+                    try {
+                      final isLogin = await authProvider.verifyOTP(otp: controller.text);
+
+                      if(isLogin) {
+                        Navigator.of(context).pop();
+                      } else {
                         Navigator.of(context).pushNamed(kRegisterRoute);
-                      }, child: Text("Sign Up",style: TextStyleConstant.textStyleFont600FontSize14.copyWith(color: kPrimaryColor),))
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(kHomeRoute);
-                    },
-                    child: SizedBox(
-                      height: 44,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Skip",style: TextStyleConstant.textStyleFont600FontSize14ColorSkip),
-                          const SizedBox(width: 5),
-                          Assets.arrowRightIcon(width: 15.sp)
-                        ],
-                      ),
-                    ),
-                  ),
+                      }
+
+                      setState(() {
+                        res.state == Status.completed;
+                      });
+
+                    } catch (e) {
+                      Toaster.showMessage(context, msg: e.toString());
+                    }
+                  }, isLoading: res.state == Status.loading),
+                  SizedBox(height: 1.h),
+
 
                 ],
               ),

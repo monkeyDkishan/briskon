@@ -21,4 +21,3 @@ class Result<T> {
   }
 }
 
-enum Status { loading, completed, error, unAuthorised }

@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:briskon/app_provider.dart';
 import 'package:briskon/utils.dart';
 import 'package:briskon/view/applications/application_view.dart';
 import 'package:briskon/view/auth/login.dart';
@@ -22,72 +23,78 @@ import 'package:briskon/view/order/order_list_screen.dart';
 import 'package:briskon/view/products/products_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import 'config.dart';
 
 Widget app(){
   
-  return Sizer(builder: (context, orientation, deviceType) {
-    return MaterialApp(
-      title: kAppName,
-      debugShowCheckedModeBanner: false,
-      debugShowMaterialGrid: false,
-      theme: ThemeData(
-        fontFamily: kRegularFonts,
-        appBarTheme: AppBarTheme(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            iconTheme: const IconThemeData(
-              color: Colors.black, //change your color here
-            ),
-            foregroundColor: Colors.black,
-            centerTitle: true,
-            titleTextStyle: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.black
-            ),
-            systemOverlayStyle: Platform.isAndroid ?
-            const SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              statusBarBrightness: Brightness.dark,
-              statusBarIconBrightness:Brightness.dark ,
-              systemNavigationBarIconBrightness: Brightness.dark,
-            ) : SystemUiOverlayStyle.dark
-        ),
-        scaffoldBackgroundColor: Colors.white,
-        primarySwatch: Colors.red,
-      ),
-      initialRoute: kInitialRoute,
-      routes: {
-        kInitialRoute: (context) => const LendingScreen(),
-        kLoginRoute: (context) => const LoginScreen(),
-        kVerifyOTPRoute: (context) => const VerifyOTPScreen(),
-        kRegisterRoute: (context) => const SignupScreen(),
-        kHomeRoute: (context) => const HomeScreen(),
-        kAddEnquiryRoute: (context) => const AddEnquiryBasicDetailsScreen(),
-        kAddOrderDetailsRoute: (context) => const AddEnquiryProductDetailsScreen(),
-        kOrderListRoute: (context) => const OrderListScreen(),
-        kOrderDetailsRoute: (context) => OrderDetailsScreen(),
-        kMyAccountRoute: (context) => const MyAccount(),
-        kCertificatedRoute: (context) => const CertificatesList(),
-        kDistributorsRoute: (context) => const OurDistributorsView(),
-        kContactUsRoute: (context) => ContactUsView(),
-        kProfileRoute: (context) => const MyProfileView(),
-        kKYCRoute: (context) => const KYCScreen(),
-        kApplicationRoute: (context) => ApplicationView(),
-        kProductDetailsRoute: (context) => const ProductDetailsScreen(),
-        kConfirmOrderRoute: (context) => const ConfirmOrderScreen(),
-      },
-      builder: (context, child) {
-        final MediaQueryData data = MediaQuery.of(context);
-        return MediaQuery(
-          data: data.copyWith(
-              textScaleFactor: 1.0
+  return MultiProvider(
+    providers: [
+      AppProvider.auth
+    ],
+    child: Sizer(builder: (context, orientation, deviceType) {
+      return MaterialApp(
+        title: kAppName,
+        debugShowCheckedModeBanner: false,
+        debugShowMaterialGrid: false,
+        theme: ThemeData(
+          fontFamily: kRegularFonts,
+          appBarTheme: AppBarTheme(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              iconTheme: const IconThemeData(
+                color: Colors.black, //change your color here
+              ),
+              foregroundColor: Colors.black,
+              centerTitle: true,
+              titleTextStyle: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black
+              ),
+              systemOverlayStyle: Platform.isAndroid ?
+              const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarBrightness: Brightness.dark,
+                statusBarIconBrightness:Brightness.dark ,
+                systemNavigationBarIconBrightness: Brightness.dark,
+              ) : SystemUiOverlayStyle.dark
           ),
-          child: child ?? Container(),
-        );
-      },
-    );
-  },);
+          scaffoldBackgroundColor: Colors.white,
+          primarySwatch: Colors.red,
+        ),
+        initialRoute: kInitialRoute,
+        routes: {
+          kInitialRoute: (context) => const LendingScreen(),
+          kLoginRoute: (context) => const LoginScreen(),
+          kVerifyOTPRoute: (context) => const VerifyOTPScreen(),
+          kRegisterRoute: (context) => const SignupScreen(),
+          kHomeRoute: (context) => const HomeScreen(),
+          kAddEnquiryRoute: (context) => const AddEnquiryBasicDetailsScreen(),
+          kAddOrderDetailsRoute: (context) => const AddEnquiryProductDetailsScreen(),
+          kOrderListRoute: (context) => const OrderListScreen(),
+          kOrderDetailsRoute: (context) => OrderDetailsScreen(),
+          kMyAccountRoute: (context) => const MyAccount(),
+          kCertificatedRoute: (context) => const CertificatesList(),
+          kDistributorsRoute: (context) => const OurDistributorsView(),
+          kContactUsRoute: (context) => ContactUsView(),
+          kProfileRoute: (context) => const MyProfileView(),
+          kKYCRoute: (context) => const KYCScreen(),
+          kApplicationRoute: (context) => ApplicationView(),
+          kProductDetailsRoute: (context) => const ProductDetailsScreen(),
+          kConfirmOrderRoute: (context) => const ConfirmOrderScreen(),
+        },
+        builder: (context, child) {
+          final MediaQueryData data = MediaQuery.of(context);
+          return MediaQuery(
+            data: data.copyWith(
+                textScaleFactor: 1.0
+            ),
+            child: child ?? Container(),
+          );
+        },
+      );
+    },),
+  );
 }

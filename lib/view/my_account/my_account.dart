@@ -1,6 +1,8 @@
 import 'package:briskon/model/my_account/my_account_list_model.dart';
+import 'package:briskon/provider/auth_provider.dart';
 import 'package:briskon/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyAccount extends StatelessWidget {
   const MyAccount({Key? key}) : super(key: key);
@@ -26,6 +28,7 @@ class MyAccount extends StatelessWidget {
                 if(element.key == "my_profile") {
                   Navigator.of(context).pushNamed(kProfileRoute);
                 } else if(element.key == "logout") {
+                  context.read<AuthProvider>().logout();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 } else if(element.key == "kyc") {
                   Navigator.of(context).pushNamed(kKYCRoute);

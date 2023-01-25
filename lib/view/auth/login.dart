@@ -1,15 +1,35 @@
+import 'package:briskon/provider/auth_provider.dart';
 import 'package:briskon/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../common/auth_bg.dart';
 import '../common/auth_button.dart';
 import '../common/auth_text_field.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    final authProvider = context.watch<AuthProvider>();
+    final res = authProvider.resSendOtp;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -25,7 +45,7 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      Text("Sign In", style: TextStyle(
+                      Text("Enter Mobile Number", style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 20.sp,
                           color: kPrimaryColor
@@ -39,13 +59,22 @@ class LoginScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 3.h),
-                  AuthTextField(prefix: Assets.phoneIcon(width: 20.sp), hint: "Phone"),
+                  AuthTextField(prefix: Assets.phoneIcon(width: 20.sp), hint: "Phone", controller: controller),
 
                   SizedBox(height: 2.h),
-                  AuthButton(title: "Send OTP",onTap: () {
-                    Navigator.of(context).pushNamed(kHomeRoute);
-                  }),
+                  AuthButton(title: "Send OTP",onTap: () async {
+
+                    try {
+                      await authProvider.sendOTP(mobile: controller.text);
+                      Navigator.of(context).pushNamed(kVerifyOTPRoute);
+                    } catch (e) {
+                      Toaster.showMessage(context, msg: e.toString());
+                    }
+
+
+                  }, isLoading: res.state == Status.loading),
                   SizedBox(height: 1.h),
+                  if(false)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -57,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.of(context).pushNamed(kHomeRoute);
+                      authProvider.setIsGuest();
                     },
                     child: SizedBox(
                       height: 44,

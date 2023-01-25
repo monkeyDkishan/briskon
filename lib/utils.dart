@@ -30,3 +30,5 @@ part 'utils/extension+date.dart';
 part 'utils/assets.dart';
 
 part 'utils/styles.dart';
+
+part 'utils/base_notifier.dart';

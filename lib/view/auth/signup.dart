@@ -155,7 +155,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context).popUntil((route) => route.isFirst);
                             },
                             child: Text(
                               "Sign In",

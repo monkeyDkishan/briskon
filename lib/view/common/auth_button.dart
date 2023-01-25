@@ -1,15 +1,18 @@
+import 'package:briskon/view/common/loading_small.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils.dart';
 
 class AuthButton extends StatelessWidget {
-  const AuthButton({Key? key, this.onTap, required this.title}) : super(key: key);
+  const AuthButton({Key? key, this.onTap, required this.title, this.isLoading}) : super(key: key);
   final GestureTapCallback? onTap;
   final String title;
+  final bool? isLoading;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: isLoading == true ? null : onTap,
       child: Container(
         decoration: BoxDecoration(
             color: kPrimaryColor,
@@ -21,7 +24,14 @@ class AuthButton extends StatelessWidget {
         ),
         padding: EdgeInsets.symmetric(vertical: 15.sp,horizontal: 70.sp),
 
-        child: Text(title,style: TextStyle(
+        child: isLoading == true ? const SizedBox(
+          height: 22,
+          width: 22,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        ) : Text(title,style: TextStyle(
             color: Colors.white,
             fontSize: 14.sp,
             fontWeight: FontWeight.w700
