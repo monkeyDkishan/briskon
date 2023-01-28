@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AddEnquiryField extends StatelessWidget {
-  const AddEnquiryField({Key? key, required this.hint, this.inputFormatters, this.keyboardType, this.controller, this.maxLines, this.readyOnly}) : super(key: key);
+  const AddEnquiryField({Key? key, required this.hint, this.inputFormatters, this.keyboardType, this.controller, this.maxLines, this.readyOnly, this.inForProduct, this.onChanged}) : super(key: key);
 
   final String hint;
   final List<TextInputFormatter>? inputFormatters;
@@ -11,6 +11,8 @@ class AddEnquiryField extends StatelessWidget {
   final TextEditingController? controller;
   final int? maxLines;
   final bool? readyOnly;
+  final bool? inForProduct;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +35,20 @@ class AddEnquiryField extends StatelessWidget {
         controller: controller,
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,
+        onChanged: onChanged,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 15.sp),
+          suffixIcon: inForProduct == true ? Container(
+            decoration: const BoxDecoration(
+              // color: Colors.grey.withOpacity(0.3),
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(5),
+                bottomRight: Radius.circular(5)
+              )
+            ),
+            padding: EdgeInsets.symmetric(vertical: 12.sp,horizontal: 10.sp),
+            child: Text("in Tons", style: TextStyleConstant.textStyleFont500FontSize12),
+          ) : null,
+          contentPadding: EdgeInsets.symmetric(horizontal: 10.sp),
           border: InputBorder.none,
           hintText: hint,
           hintStyle: TextStyleConstant.textStyleFont400FontSize12.copyWith(

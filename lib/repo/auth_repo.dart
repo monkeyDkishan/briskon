@@ -101,7 +101,7 @@ class AuthRepo extends IAuthRepo {
 
     final mapData = FormData.fromMap(jsonData);
 
-    final json = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.register, data: mapData));
+    final json = await WebService.instance.post(request: NetworkRequest(url: ServerConfig.updateUserDetailsById, data: mapData));
 
     return ResCommon.fromJson(json);
 

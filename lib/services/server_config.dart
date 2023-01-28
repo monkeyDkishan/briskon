@@ -7,5 +7,6 @@ class ServerConfig {
   static var register = "$baseURL/register";
   static var getUserDetailsById = "$baseURL/get_user_details_by_id";
   static var updateUserDetailsById = "$baseURL/update_user_details_by_id";
+  static var getProductList = "$baseURL/get_product_list";
 
 }

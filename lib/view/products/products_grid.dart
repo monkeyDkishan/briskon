@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 class ProductsGrid extends StatelessWidget {
   ProductsGrid({Key? key}) : super(key: key);
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

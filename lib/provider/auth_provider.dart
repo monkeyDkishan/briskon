@@ -217,6 +217,7 @@ class AuthProvider extends BaseNotifier implements IAuthProvider {
 
       if(res.status == 1) {
         resIsSuccess(_resUpdateUserDetailsById, res);
+        getUserDetailsById();
       } else {
         throw res.message ?? "Something Went Wrong.";
       }

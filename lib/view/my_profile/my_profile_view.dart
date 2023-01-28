@@ -279,24 +279,34 @@ class _MyProfileViewState extends State<MyProfileView> {
                 SizedBox(height: 20.sp),
 
                 if(isEditing)
-                 AppButton(title: "Save", onTap: () {
+                 AppButton(title: "Save", onTap: () async {
 
-                   final req = ReqUpdateUser(
-                     firstName: _firstName.text,
-                     lastName: _lastName.text,
-                     email: _emailName.text,
-                     companyName: _companyName.text,
-                     designation: _designationName.text,
-                     city: city,
-                     state: state,
-                     addressLine1: _address1.text,
-                     addressLine2: _address2.text,
-                     country: "India",
-                     postalCode: _postalCode.text,
-                     profilePic: imagePath
-                   );
+                   try {
+                     final req = ReqUpdateUser(
+                              firstName: _firstName.text,
+                              lastName: _lastName.text,
+                              email: _emailName.text,
+                              companyName: _companyName.text,
+                              designation: _designationName.text,
+                              city: city,
+                              state: state,
+                              addressLine1: _address1.text,
+                              addressLine2: _address2.text,
+                              country: "India",
+                              postalCode: _postalCode.text,
+                              profilePic: imagePath);
 
-                   // authProvider.updateUserDetailsById(req: req)
+                          await authProvider.updateUserDetailsById(req: req);
+
+                          Toaster.showMessage(context, msg: "Profile Saved");
+
+                          setState(() {
+                            isEditing = false;
+                          });
+
+                   } catch (e) {
+                     Toaster.showMessage(context, msg: e.toString());
+                   }
                  }, isLoading: res.state == Status.loading),
 
 

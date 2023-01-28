@@ -31,7 +31,8 @@ Widget app(){
   
   return MultiProvider(
     providers: [
-      AppProvider.auth
+      AppProvider.auth,
+      AppProvider.enquiry
     ],
     child: Sizer(builder: (context, orientation, deviceType) {
       return MaterialApp(
