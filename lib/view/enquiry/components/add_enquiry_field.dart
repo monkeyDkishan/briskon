@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AddEnquiryField extends StatelessWidget {
-  const AddEnquiryField({Key? key, required this.hint, this.inputFormatters, this.keyboardType, this.controller, this.maxLines}) : super(key: key);
+  const AddEnquiryField({Key? key, required this.hint, this.inputFormatters, this.keyboardType, this.controller, this.maxLines, this.readyOnly}) : super(key: key);
 
   final String hint;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
   final TextEditingController? controller;
   final int? maxLines;
+  final bool? readyOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +28,7 @@ class AddEnquiryField extends StatelessWidget {
           ]
       ),
       child: TextField(
+        readOnly: readyOnly == true,
         maxLines: maxLines ?? 1,
         controller: controller,
         keyboardType: keyboardType,

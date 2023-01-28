@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MyProfileField extends StatelessWidget {
-  const MyProfileField({Key? key, required this.hint, this.inputFormatters, this.keyboardType, this.controller, this.maxLines}) : super(key: key);
+  const MyProfileField({Key? key, required this.hint, this.inputFormatters, this.keyboardType, this.controller, this.maxLines, this.readOnly}) : super(key: key);
 
   final String hint;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
   final TextEditingController? controller;
   final int? maxLines;
+  final bool? readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +28,7 @@ class MyProfileField extends StatelessWidget {
           ]
       ),
       child: TextField(
+        readOnly: readOnly == true,
         maxLines: maxLines ?? 1,
         controller: controller,
         keyboardType: keyboardType,

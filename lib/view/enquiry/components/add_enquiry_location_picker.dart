@@ -7,16 +7,23 @@ import '../../../model/location/country.dart';
 import '../../common/search_selection_screen.dart';
 
 class AddEnquiryLocationPicker extends StatefulWidget {
-  const AddEnquiryLocationPicker({Key? key}) : super(key: key);
+   AddEnquiryLocationPicker({Key? key, required this.onCity, required this.onState, this.selectedState, this.selectedCity}) : super(key: key);
+
+   String? selectedState = "Gujarat";
+
+   String? selectedCity = "Ahmedabad";
+
+   final Function(String) onCity;
+   final Function(String) onState;
 
   @override
   State<AddEnquiryLocationPicker> createState() => _AddEnquiryLocationPickerState();
 }
 
 class _AddEnquiryLocationPickerState extends State<AddEnquiryLocationPicker> {
-  String? selectedState = "Gujarat";
 
-  String? selectedCity = "Ahmedabad";
+  get selectedState => widget.selectedState;
+  get selectedCity => widget.selectedCity;
 
   List<SearchModel>? getStates({String? jsonString}) {
     final json = jsonDecode(jsonString ?? "");
@@ -69,8 +76,8 @@ class _AddEnquiryLocationPickerState extends State<AddEnquiryLocationPicker> {
 
             SearchListForEnquiry(searchList: states ?? [], selectedObject: (value){
               setState(() {
-                selectedState = value.title ?? "Gujarat";
-                selectedCity = null;
+                widget.selectedState = value.title ?? "Gujarat";
+                widget.selectedCity = null;
               });
             }, hint: "State",title: selectedState,prefix: Assets.locationMarkIcon(width: 20.sp, height: 20),),
 
@@ -78,7 +85,7 @@ class _AddEnquiryLocationPickerState extends State<AddEnquiryLocationPicker> {
 
             SearchListForEnquiry(searchList: cities ?? [], selectedObject: (value){
               setState(() {
-                selectedCity = value.title ?? "Ahmedabad";
+                widget.selectedCity = value.title ?? "Ahmedabad";
               });
             }, hint: "City",title: selectedCity,prefix: Assets.locationMarkIcon(width: 20.sp, height: 20),),
           ],

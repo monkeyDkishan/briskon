@@ -24,6 +24,8 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
 
   final TextEditingController controller = TextEditingController();
 
+  Timer? timer;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -47,7 +49,7 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
     });
 
     const oneSec = Duration(seconds: 1);
-     Timer.periodic(
+     timer = Timer.periodic(
       oneSec,
           (Timer timer) {
         if (time == 0) {
@@ -124,16 +126,12 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
 
                     try {
                       final isLogin = await authProvider.verifyOTP(otp: controller.text);
-
+                      timer?.cancel();
                       if(isLogin) {
                         Navigator.of(context).pop();
                       } else {
                         Navigator.of(context).pushNamed(kRegisterRoute);
                       }
-
-                      setState(() {
-                        res.state == Status.completed;
-                      });
 
                     } catch (e) {
                       Toaster.showMessage(context, msg: e.toString());

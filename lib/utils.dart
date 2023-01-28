@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:briskon/utils/date_utility.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 part 'utils/enum.dart';
 
@@ -32,3 +33,5 @@ part 'utils/assets.dart';
 part 'utils/styles.dart';
 
 part 'utils/base_notifier.dart';
+
+part 'utils/custom_image_picker.dart';

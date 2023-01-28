@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import '../../utils.dart';
 
 class AppButton extends StatelessWidget {
-  const AppButton({Key? key, this.onTap, required this.title}) : super(key: key);
+  const AppButton({Key? key, this.onTap, required this.title, this.isLoading}) : super(key: key);
   final GestureTapCallback? onTap;
   final String title;
+  final bool? isLoading;
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: isLoading == true ? null : onTap,
       child: Container(
         decoration: BoxDecoration(
             color: kPrimaryColor,
@@ -22,7 +24,16 @@ class AppButton extends StatelessWidget {
         ),
         padding: EdgeInsets.symmetric(vertical: 15.sp),
 
-        child: Center(
+        child: isLoading == true ? const Center(
+          child: SizedBox(
+            height: 22,
+            width: 22,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ),
+        ) : Center(
           child: Text(title,style: TextStyle(
               color: Colors.white,
               fontSize: 14.sp,

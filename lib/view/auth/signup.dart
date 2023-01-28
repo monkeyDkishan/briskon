@@ -1,10 +1,13 @@
+import 'package:briskon/model/user/req_register.dart';
 import 'package:briskon/utils.dart';
 import 'package:briskon/view/common/auth_button.dart';
 import 'package:briskon/view/common/auth_text_field.dart';
 import 'package:briskon/view/common/auth_bg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/auth_provider.dart';
 import 'component/country_selection_signup.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -17,8 +20,55 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   bool isTermsSelected = false;
 
+  late final TextEditingController _firstName;
+  late final TextEditingController _lastName;
+  late final TextEditingController _emailName;
+  late final TextEditingController _mobileName;
+  late final TextEditingController _companyName;
+  late final TextEditingController _designationName;
+  late final TextEditingController _address1;
+  late final TextEditingController _address2;
+  late final TextEditingController _postalCode;
+
+  String city = "Gujarat";
+  String state = "Ahmedabad";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _firstName = TextEditingController();
+    _lastName = TextEditingController();
+    _emailName = TextEditingController();
+    _mobileName = TextEditingController();
+    _companyName = TextEditingController();
+    _designationName = TextEditingController();
+    _address1 = TextEditingController();
+    _address2 = TextEditingController();
+    _postalCode = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _firstName.dispose();
+    _lastName.dispose();
+    _emailName.dispose();
+    _mobileName.dispose();
+    _companyName.dispose();
+    _designationName.dispose();
+    _address1.dispose();
+    _address2.dispose();
+    _postalCode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final authProvider = context.watch<AuthProvider>();
+    final res = authProvider.resRegister;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -56,7 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           LengthLimitingTextInputFormatter(nameLimit),
                         ],
                         keyboardType: TextInputType.name,
-                        hint: "First Name"),
+                        hint: "First Name",controller: _firstName),
                     SizedBox(height: 1.h),
                     AuthTextField(
                         prefix: Assets.userIcon(width: 20.sp),
@@ -64,7 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           LengthLimitingTextInputFormatter(nameLimit),
                         ],
                         keyboardType: TextInputType.name,
-                        hint: "Last Name"),
+                        hint: "Last Name", controller: _lastName),
                     SizedBox(height: 1.h),
                     AuthTextField(
                       prefix: Assets.emailIcon(width: 16.sp),
@@ -73,24 +123,17 @@ class _SignupScreenState extends State<SignupScreen> {
                       ],
                       keyboardType: TextInputType.emailAddress,
                       hint: "Email",
+                      controller: _emailName,
                     ),
                     SizedBox(height: 1.h),
-                    AuthTextField(
-                        prefix: Assets.phoneIcon(width: 20.sp),
-                      inputFormatters: [
-                        LengthLimitingTextInputFormatter(mobileLimit),
-                        FilteringTextInputFormatter.digitsOnly
-                      ],
-                      keyboardType: TextInputType.phone,
-                        hint: "Mobile Number",),
-                    SizedBox(height: 1.h),
+
                     AuthTextField(
                         prefix: Assets.companyIcon(width: 17.sp, height: 20),
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(nameLimit),
                         ],
                         keyboardType: TextInputType.name,
-                        hint: "Company Name"),
+                        hint: "Company Name",controller: _companyName),
                     SizedBox(height: 1.h),
                     AuthTextField(
                         prefix: Assets.designationIcon(width: 20.sp),
@@ -98,27 +141,42 @@ class _SignupScreenState extends State<SignupScreen> {
                           LengthLimitingTextInputFormatter(nameLimit),
                         ],
                         keyboardType: TextInputType.name,
-                        hint: "Designation"),
-                    SizedBox(height: 1.h),
-                    const CountryAndCitySelectionSignup(),
+                        hint: "Designation",controller: _designationName),
                     SizedBox(height: 1.h),
                     AuthTextField(
-                        obscureText: true,
-                        prefix: Assets.passwordIcon(width: 20.sp),
+                        prefix: Assets.locationMarkIcon(width: 20.sp),
                         inputFormatters: [
-                          LengthLimitingTextInputFormatter(passwordLimit),
+                          LengthLimitingTextInputFormatter(addressLimit),
                         ],
-                        keyboardType: TextInputType.visiblePassword,
-                        hint: "Password"),
+                        keyboardType: TextInputType.streetAddress,
+                        hint: "Address Line 1", controller: _address1),
                     SizedBox(height: 1.h),
                     AuthTextField(
-                        obscureText: true,
-                        prefix: Assets.passwordIcon(width: 20.sp),
+                        prefix: Assets.locationMarkIcon(width: 20.sp),
                         inputFormatters: [
-                          LengthLimitingTextInputFormatter(passwordLimit),
+                          LengthLimitingTextInputFormatter(addressLimit),
                         ],
-                        keyboardType: TextInputType.visiblePassword,
-                        hint: "Confirm Password"),
+                        keyboardType: TextInputType.streetAddress,
+                        hint: "Address Line 2", controller: _address2),
+                    SizedBox(height: 1.h),
+                    AuthTextField(
+                        prefix: Assets.locationMarkIcon(width: 20.sp),
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(addressLimit),
+                        ],
+                        keyboardType: TextInputType.text,
+                        hint: "PostalCode", controller: _postalCode),
+                    SizedBox(height: 1.h),
+                    CountryAndCitySelectionSignup(
+                      onCitySelection: (city) {
+                        this.city = city;
+                      },
+                      onStateSelection: (state) {
+                        this.state = state;
+                      },
+                    ),
+                    SizedBox(height: 1.h),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -141,10 +199,35 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     SizedBox(height: 2.h),
                     AuthButton(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(kHomeRoute);
+                      onTap: () async {
+
+                        try {
+
+                          if(isTermsSelected == false) { throw "Please accept terms and conditions.";}
+
+                          final req = ReqRegister(
+                            firstName: _firstName.text,
+                            lastName: _lastName.text,
+                            email: _emailName.text,
+                            companyName: _companyName.text,
+                            designation: _designationName.text,
+                            city: city,
+                            state: state,
+                            addressLine1: _address1.text,
+                            addressLine2: _address2.text,
+                            country: "India",
+                            postalCode: _postalCode.text,
+                          );
+
+                          await authProvider.register(req: req);
+
+                          Navigator.of(context).popUntil((route) => route.isFirst);
+
+                        } catch (e) {
+                          Toaster.showMessage(context, msg: e.toString());
+                        }
                       },
-                        title: "Sign Up"),
+                        title: "Sign Up", isLoading: res.state == Status.loading),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

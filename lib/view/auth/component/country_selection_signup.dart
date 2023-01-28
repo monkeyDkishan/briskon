@@ -7,7 +7,10 @@ import '../../../utils.dart';
 import '../../common/search_selection_screen.dart';
 
 class CountryAndCitySelectionSignup extends StatefulWidget {
-  const CountryAndCitySelectionSignup({Key? key}) : super(key: key);
+  const CountryAndCitySelectionSignup({Key? key, required this.onCitySelection, required this.onStateSelection}) : super(key: key);
+
+  final Function(String) onCitySelection;
+  final Function(String) onStateSelection;
 
   @override
   State<CountryAndCitySelectionSignup> createState() => _CountryAndCitySelectionSignupState();
@@ -17,6 +20,14 @@ class _CountryAndCitySelectionSignupState extends State<CountryAndCitySelectionS
 
   String? selectedState = "Gujarat";
   String? selectedCity = "Ahmedabad";
+
+  @override
+  initState() {
+    super.initState();
+    widget.onCitySelection(selectedCity ?? "");
+    widget.onStateSelection(selectedState ?? "");
+
+  }
 
   List<SearchModel>? getStates({String? jsonString}) {
     final json = jsonDecode(jsonString ?? "");
@@ -70,6 +81,7 @@ class _CountryAndCitySelectionSignupState extends State<CountryAndCitySelectionS
                 selectedState = value.title ?? "Gujarat";
                 selectedCity = null;
               });
+              widget.onStateSelection(selectedState ?? "");
             }, hint: "State",title: selectedState,prefix: Assets.locationMarkIcon(width: 20.sp, height: 20),),
 
             SizedBox(height: 1.h),
@@ -78,6 +90,7 @@ class _CountryAndCitySelectionSignupState extends State<CountryAndCitySelectionS
               setState(() {
                 selectedCity = value.title ?? "Ahmedabad";
               });
+              widget.onCitySelection(selectedCity ?? "");
             }, hint: "City",title: selectedCity,prefix: Assets.locationMarkIcon(width: 20.sp, height: 20),),
           ],
         );

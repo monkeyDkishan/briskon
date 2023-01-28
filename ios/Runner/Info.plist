@@ -6,6 +6,18 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camara access needed to take picture for profile.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo gallery access needed to save your Emergency Info image which can be setup as your lock screen wallpaper.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Please allow microphone usage to play sound</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your current location information needed to help you search pharmacy around you.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Your current location information needed to help you search pharmacy around you.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your current location information needed to help you search pharmacy around you.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Briskon</string>
 	<key>CFBundleExecutable</key>

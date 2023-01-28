@@ -7,16 +7,24 @@ import '../../../model/location/country.dart';
 import '../../common/search_selection_screen.dart';
 
 class MyProfileLocationPicker extends StatefulWidget {
-  const MyProfileLocationPicker({Key? key}) : super(key: key);
+  MyProfileLocationPicker({Key? key, required this.onCity, required this.onState, required this.isReadOnly}) : super(key: key);
+
+  String? selectedState = "Gujarat";
+
+  String? selectedCity = "Ahmedabad";
+
+  final Function(String) onCity;
+  final Function(String) onState;
+  final bool isReadOnly;
 
   @override
   State<MyProfileLocationPicker> createState() => _MyProfileLocationPickerState();
 }
 
 class _MyProfileLocationPickerState extends State<MyProfileLocationPicker> {
-  String? selectedState = "Gujarat";
 
-  String? selectedCity = "Ahmedabad";
+  get selectedState => widget.selectedState;
+  get selectedCity => widget.selectedCity;
 
   List<SearchModel>? getStates({String? jsonString}) {
     final json = jsonDecode(jsonString ?? "");
@@ -67,18 +75,18 @@ class _MyProfileLocationPickerState extends State<MyProfileLocationPicker> {
         return Column(
           children: [
 
-            SearchListForEnquiry(searchList: states ?? [], selectedObject: (value){
+            SearchListForEnquiry(searchList: states ?? [], isReadOnly: widget.isReadOnly, selectedObject: (value){
               setState(() {
-                selectedState = value.title ?? "Gujarat";
-                selectedCity = null;
+                widget.selectedState = value.title ?? "Gujarat";
+                widget.selectedCity = null;
               });
             }, hint: "State",title: selectedState,prefix: Assets.locationMarkIcon(width: 20.sp, height: 20),),
 
             SizedBox(height: 12.sp),
 
-            SearchListForEnquiry(searchList: cities ?? [], selectedObject: (value){
+            SearchListForEnquiry(searchList: cities ?? [], isReadOnly: widget.isReadOnly, selectedObject: (value){
               setState(() {
-                selectedCity = value.title ?? "Ahmedabad";
+                widget.selectedCity = value.title ?? "Ahmedabad";
               });
             }, hint: "City",title: selectedCity,prefix: Assets.locationMarkIcon(width: 20.sp, height: 20),),
           ],
@@ -91,26 +99,11 @@ class _MyProfileLocationPickerState extends State<MyProfileLocationPicker> {
 
     },future: loadAsset());
 
-    return Container(
-      padding: EdgeInsets.only(top: 10.sp,bottom: 5.sp),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(5.sp),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xff8A959E).withOpacity(0.1),
-              offset: Offset(0,2.sp),
-              blurRadius: 40,
-            )
-          ]
-      ),
-
-    );
   }
 }
 
 class SearchListForEnquiry extends StatelessWidget {
-  const SearchListForEnquiry({Key? key,required this.searchList, required this.selectedObject,this.title,required this.hint, this.prefix}) : super(key: key);
+  const SearchListForEnquiry({Key? key,required this.searchList, required this.selectedObject,this.title,required this.hint, this.prefix, required this.isReadOnly}) : super(key: key);
 
   final List<SearchModel> searchList;
 
@@ -122,13 +115,15 @@ class SearchListForEnquiry extends StatelessWidget {
 
   final Widget? prefix;
 
+  final bool isReadOnly;
+
   @override
   Widget build(BuildContext context) {
 
     final enabled = searchList.isNotEmpty;
 
     return InkWell(
-      onTap: () {
+      onTap: isReadOnly ? null : () {
         if(!enabled){return;}
         final searchScreen = SearchSelectionScreen(searchList: searchList, selectedObject: selectedObject);
 

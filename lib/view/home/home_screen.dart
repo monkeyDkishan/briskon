@@ -1,7 +1,9 @@
+import 'package:briskon/provider/auth_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:briskon/utils.dart';
 import 'package:briskon/model/home/menu_model.dart';
+import 'package:provider/provider.dart';
 
 import '../pdf_view/pdf_view.dart';
 
@@ -19,6 +21,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<int> bannerIndexName = [0,1,2,3];
 
   int selectedMenu = -1;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<AuthProvider>().getUserDetailsById();
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
