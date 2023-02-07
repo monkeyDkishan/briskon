@@ -1,3 +1,4 @@
+import 'package:briskon/model/order/req_create_lead.dart';
 import 'package:briskon/provider/enquiry_provider.dart';
 import 'package:briskon/utils.dart';
 import 'package:briskon/view/common/app_button.dart';
@@ -21,14 +22,28 @@ class _AddEnquiryProductDetailsScreenState
     extends State<AddEnquiryProductDetailsScreen> {
   bool isTermsSelected = false;
 
+  late TextEditingController addressController;
+  late TextEditingController messageController;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+    addressController = TextEditingController();
+    messageController = TextEditingController();
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<EnquiryProvider>().productList();
     });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    addressController.dispose();
+    messageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -80,15 +95,17 @@ class _AddEnquiryProductDetailsScreenState
                       padding: EdgeInsets.zero,
                     ),
                     AddEnquiryField(
+                      controller: messageController,
                       hint: "Message",
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(addressLimit),
                       ],
                       maxLines: 3,
-                      keyboardType: TextInputType.streetAddress,
+                      keyboardType: TextInputType.text,
                     ),
                     spacer,
                     AddEnquiryField(
+                      controller: addressController,
                       hint: "Delivery Address",
                       inputFormatters: [
                         LengthLimitingTextInputFormatter(addressLimit),
@@ -150,9 +167,36 @@ class _AddEnquiryProductDetailsScreenState
                                 return RegularPriceInput(
                                   title: "Please Enter Price for $productName",
                                   onSubmit: (price) {
-                                    Navigator.of(context).pushNamed(
-                                        kConfirmOrderRoute,
-                                        arguments: price);
+
+                                    final req = context.read<EnquiryProvider>().lead;
+
+                                    req.primaryProductPricePerTon = price;
+
+                                    req.leadProducts = [];
+
+                                    for (var product in productList) {
+
+                                      if(product.amount.isNotEmpty) {
+
+                                        final qty = int.tryParse(product.amount);
+
+                                        final leadProduct = LeadProduct(productId: product.id, quantity: qty);
+
+                                        leadProduct.productName = product.productName;
+
+                                        req.leadProducts?.add(leadProduct);
+
+                                      }
+
+                                    }
+
+                                    req.billingAddress = addressController.text;
+                                    req.deliveryAddress = addressController.text;
+                                    req.note = messageController.text;
+
+                                    Navigator.of(context).pop();
+
+                                    Navigator.of(context).pushNamed(kConfirmOrderRoute);
                                   },
                                 );
                               },

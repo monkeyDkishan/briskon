@@ -9,10 +9,10 @@ class ResGetProductList {
   String? message;
   Data? data;
 
-  factory ResGetProductList.fromJson(Map<String, dynamic> json) => ResGetProductList(
-    status: json["status"],
-    message: json["message"],
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
+  factory ResGetProductList.fromJson(Map<String, dynamic>? json) => ResGetProductList(
+    status: json?["status"],
+    message: json?["message"],
+    data: json?["data"] == null ? null : Data.fromJson(json?["data"]),
   );
 
   Map<String, dynamic> toJson() => {

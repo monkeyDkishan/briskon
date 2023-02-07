@@ -1,5 +1,8 @@
+import 'package:briskon/provider/enquiry_provider.dart';
+import 'package:briskon/view/common/app_button.dart';
 import 'package:briskon/view/success/success_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils.dart';
 import '../components/order_details_component.dart';
@@ -14,7 +17,6 @@ class ConfirmOrderScreen extends StatefulWidget {
 
 class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
 
-  double? defaultPriceFor20mm;
 
   @override
   void initState() {
@@ -22,35 +24,17 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final value = ModalRoute.of(context)!.settings.arguments as double;
 
-      setState(() {
-        defaultPriceFor20mm = value;
-      });
     });
 
   }
 
-  final List<String> products = [
-    "8 mm",
-    "10 mm",
-    "12 mm",
-    "16 mm",
-    "20 mm",
-    "25 mm",
-  ];
-
-  final List<int> productsValues = [
-    10,
-    25,
-    40,
-    14,
-    20,
-    18,
-  ];
-
   @override
   Widget build(BuildContext context) {
+
+    final enquiryProvider = context.watch<EnquiryProvider>();
+    final leadReq = enquiryProvider.lead;
+    final resCreateLead = enquiryProvider.resCreateLead;
 
     return Scaffold(
       backgroundColor: const Color(0xffF3F5F4),
@@ -72,7 +56,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                     children: [
                       Text("Delivery", style: TextStyleConstant.textStyleFont400FontSize16),
                       SizedBox(height: 5.sp),
-                      Text("345 Red Enclave, The Pentagon Circle NY", style: TextStyleConstant.textStyleFont500FontSize17),
+                      Text("${leadReq.deliveryAddress}", style: TextStyleConstant.textStyleFont500FontSize17),
                     ],
                   ),
                 ),
@@ -87,9 +71,9 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const OrderKeyValue(title: "Instructions", value: "Deliver Carefully"),
+                      OrderKeyValue(title: "Instructions", value: "${leadReq.note}"),
                       SizedBox(height: 6.sp),
-                      const OrderKeyValue(title: "Order Date", value: "14 July, 2022"),
+                      OrderKeyValue(title: "Order Date", value: DateTime.now().toDDMMMYYYY),
                     ],
                   ),
                 ),
@@ -103,10 +87,16 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                   Padding(
                     padding: EdgeInsets.all(15.sp),
                     child: Column(
-                      children: List.generate(products.length, (index) => Padding(
-                        padding: EdgeInsets.symmetric(vertical: 3.sp),
-                        child: OrderKeyValue(title: products[index], value: "${productsValues[index]} Tons"),
-                      )),
+                      children: List.generate(leadReq.leadProducts?.length ?? 0, (index) {
+
+                        final products = leadReq.leadProducts?[index];
+
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 3.sp),
+                          child: OrderKeyValue(title: products?.productName ?? "", value: "${products?.quantity ?? 0} Tons"),
+                        );
+
+                      }),
                     ),
                   ),
 
@@ -117,7 +107,7 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                       child: Row(
                         children: [
                           Expanded(child: Text("Total Items", style: TextStyleConstant.textStyleFont500FontSize16)),
-                          Expanded(child: Text("${productsValues.reduce((value, element) => value + element)} Tons", style: TextStyleConstant.textStyleFont600FontSize18, textAlign: TextAlign.end,)),
+                          Expanded(child: Text("${leadReq.leadProducts?.map((e) => e.quantity).reduce((value, element) => (value ?? 0) + (element ?? 0))} Tons", style: TextStyleConstant.textStyleFont600FontSize18, textAlign: TextAlign.end,)),
                         ],
                       )
                   ),
@@ -132,68 +122,62 @@ class _ConfirmOrderScreenState extends State<ConfirmOrderScreen> {
                   child: Row(
                     children: [
                       Expanded(child: Text("Default price of 20mm bar", style: TextStyleConstant.textStyleFont500FontSize16)),
-                      Text("₹ ${defaultPriceFor20mm ?? 0.0}".moneyFormatter, style: TextStyleConstant.textStyleFont600FontSize18, textAlign: TextAlign.end,),
+                      Text("₹ ${leadReq.primaryProductPricePerTon ?? 0.0}".moneyFormatter, style: TextStyleConstant.textStyleFont600FontSize18, textAlign: TextAlign.end,),
                     ],
                   )
               )),
 
               SizedBox(height: 20.sp),
 
-              InkWell(
-                onTap: () {
+              AppButton(title: "Confirm",isLoading: resCreateLead.state == Status.loading, onTap: () {
 
-                  // set up the button
-                  Widget yesButton = TextButton(
-                    child: const Text("YES"),
-                    onPressed: () {
+                // set up the button
+                Widget yesButton = TextButton(
+                  child: const Text("YES"),
+                  onPressed: () async {
+
+                    try {
+                      await enquiryProvider.createLead();
 
                       Navigator.of(context).push(PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) {
                         return SuccessView(onFinish: () {
                           Navigator.of(context).popUntil((route) {
-                            return route.settings.name == kHomeRoute;
+                            return route.settings.name == kHomeRoute || route.isFirst;
                           });
                         });
                       },fullscreenDialog: true,opaque: true));
+                    } catch (e) {
+                      Toaster.showMessage(context, msg: e.toString());
+                    }
 
-                    },
-                  );
+                  },
+                );
 
-                  Widget noButton = TextButton(
-                    child: const Text("NO"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  );
+                Widget noButton = TextButton(
+                  child: const Text("NO"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                );
 
-                  // set up the AlertDialog
-                  AlertDialog alert = AlertDialog(
-                    title: const Text("Confirm Order"),
-                    content: const Text("Are you sure you want to confirm this order?"),
-                    actions: [
-                      noButton,
-                      yesButton
-                    ],
-                  );
+                // set up the AlertDialog
+                AlertDialog alert = AlertDialog(
+                  title: const Text("Confirm Order"),
+                  content: const Text("Are you sure you want to confirm this order?"),
+                  actions: [
+                    noButton,
+                    yesButton
+                  ],
+                );
 
-                  // show the dialog
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return alert;
-                    },
-                  );
-
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: kPrimaryColor,
-                      borderRadius: BorderRadius.circular(3)
-                  ),
-                  padding: EdgeInsets.all(15.sp),
-                  alignment: Alignment.center,
-                  child: Text("Confirm", style: TextStyleConstant.textStyleFont600FontSize16.copyWith(color: Colors.white),),
-                ),
-              )
+                // show the dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return alert;
+                  },
+                );
+              },),
 
             ],
           ),
