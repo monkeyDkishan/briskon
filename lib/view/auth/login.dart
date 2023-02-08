@@ -30,6 +30,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = context.watch<AuthProvider>();
     final res = authProvider.resSendOtp;
 
+    // is_from_guest
+
+    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
+
+    final isFromGuest = (arguments["is_from_guest"] as bool?) == true;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -84,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       }, child: Text("Sign Up",style: TextStyleConstant.textStyleFont600FontSize14.copyWith(color: kPrimaryColor),))
                     ],
                   ),
+                  if(!isFromGuest)
                   InkWell(
                     onTap: () {
                       authProvider.setIsGuest();

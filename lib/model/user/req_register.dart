@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 class ReqRegister {
   ReqRegister({
     this.firstName,
@@ -32,6 +34,7 @@ class ReqRegister {
   String? country;
   String? companyName;
   String? designation;
+  String? profilePic;
 
   factory ReqRegister.fromJson(Map<String, dynamic> json) => ReqRegister(
     firstName: json["first_name"],

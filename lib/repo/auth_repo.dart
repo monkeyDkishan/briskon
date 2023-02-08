@@ -20,6 +20,7 @@ abstract class IAuthRepo {
   Future<ResRegister> register({required ReqRegister req});
   Future<ResGetUserDetailsById> getUserDetailsById();
   Future<ResCommon> updateUserDetailsById({required ReqUpdateUser req});
+  logout();
 }
 
 class AuthRepo extends IAuthRepo {
@@ -105,6 +106,11 @@ class AuthRepo extends IAuthRepo {
 
     return ResCommon.fromJson(json);
 
+  }
+
+  @override
+  logout() {
+    secureStorage.deleteAll();
   }
 
 }

@@ -120,6 +120,8 @@ class AuthProvider extends BaseNotifier implements IAuthProvider {
         UserStorage.shared.isLogin = true;
         isLogin = true;
 
+        getUserDetailsById();
+
         return true;
       } else {
         throw res.message ?? "Something Went Wrong.";
@@ -138,6 +140,8 @@ class AuthProvider extends BaseNotifier implements IAuthProvider {
 
     UserStorage.shared.isLogin = false;
     UserStorage.shared.isGuest = false;
+
+    repo.logout();
   }
 
   @override
@@ -186,7 +190,9 @@ class AuthProvider extends BaseNotifier implements IAuthProvider {
   @override
   Future getUserDetailsById() async {
 
-    if(isGuest) return;
+    if(!isLogin) {
+      if(isGuest) return;
+    }
 
     try {
       resIsLoading(_resGetUserDetailsById);
@@ -208,7 +214,9 @@ class AuthProvider extends BaseNotifier implements IAuthProvider {
   @override
   Future updateUserDetailsById({required ReqUpdateUser req}) async {
 
-    if(isGuest) return;
+    if(!isLogin) {
+      if(isGuest) return;
+    }
 
     try {
       resIsLoading(_resUpdateUserDetailsById);

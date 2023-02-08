@@ -93,6 +93,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         return;
                       }
 
+                      if([kAddEnquiryRoute,kOrderListRoute].contains(menu.route)) {
+                        final auth = context.read<AuthProvider>();
+                        if(!auth.isLogin) {
+                          if(auth.isGuest) {
+                            Toaster.showMessage(context, msg: "Please Login to access this part of the section");
+                            Navigator.of(context).pushNamed(kLoginRoute,arguments: {
+                              "is_from_guest" : true
+                            });
+                            return;
+                          }
+                        }
+                      }
+
                       Navigator.of(context).pushNamed(menu.route);
                     },
                     onTapDown: (details) {

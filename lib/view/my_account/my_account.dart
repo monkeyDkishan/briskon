@@ -26,11 +26,31 @@ class MyAccount extends StatelessWidget {
             return InkWell(
               onTap: () {
                 if(element.key == "my_profile") {
+                  final auth = context.read<AuthProvider>();
+                  if(!auth.isLogin) {
+                    if(auth.isGuest) {
+                      Toaster.showMessage(context, msg: "Please Login to access this part of the section");
+                      Navigator.of(context).pushNamed(kLoginRoute,arguments: {
+                        "is_from_guest" : true
+                      });
+                      return;
+                    }
+                  }
                   Navigator.of(context).pushNamed(kProfileRoute);
                 } else if(element.key == "logout") {
                   context.read<AuthProvider>().logout();
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 } else if(element.key == "kyc") {
+                  final auth = context.read<AuthProvider>();
+                  if(!auth.isLogin) {
+                    if(auth.isGuest) {
+                      Toaster.showMessage(context, msg: "Please Login to access this part of the section");
+                      Navigator.of(context).pushNamed(kLoginRoute,arguments: {
+                        "is_from_guest" : true
+                      });
+                      return;
+                    }
+                  }
                   Navigator.of(context).pushNamed(kKYCRoute);
                 }
               },

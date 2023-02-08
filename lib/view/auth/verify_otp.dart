@@ -128,7 +128,7 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
                       final isLogin = await authProvider.verifyOTP(otp: controller.text);
                       timer?.cancel();
                       if(isLogin) {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).popUntil((route) => route.isFirst);
                       } else {
                         Navigator.of(context).pushNamed(kRegisterRoute);
                       }
