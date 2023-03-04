@@ -1,5 +1,6 @@
 import 'package:briskon/utils.dart';
 import 'package:briskon/view/common/app_button.dart';
+import 'package:briskon/view/custom_popup_view.dart';
 import 'package:briskon/view/enquiry/components/add_enquiry_field.dart';
 import 'package:briskon/view/enquiry/components/add_enquiry_location_picker.dart';
 import 'package:flutter/material.dart';
@@ -162,7 +163,22 @@ class _AddEnquiryBasicDetailsScreenState extends State<AddEnquiryBasicDetailsScr
 
                 AppButton(
                   onTap: () {
-                    Navigator.of(context).pushNamed(kAddOrderDetailsRoute);
+
+                    final authProvider = context.read<AuthProvider>();
+
+                    final user = authProvider.resGetUserDetailsById.response?.data;
+
+                    if(user?.kycId == null) {
+
+                      CustomPopup(context, title: "KYC", message: "You will have to add KYC to order enquiry.", primaryBtnTxt: "OK",secondaryBtnTxt: "NO",primaryAction: (){
+                        Navigator.of(context).pushNamed(kKYCRoute);
+                      });
+
+                    } else {
+                      Navigator.of(context).pushNamed(kAddOrderDetailsRoute);
+                    }
+
+
                   },
                     title: "Next"),
 

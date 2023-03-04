@@ -1,4 +1,5 @@
 import 'package:briskon/provider/auth_provider.dart';
+import 'package:briskon/provider/documents_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:briskon/utils.dart';
@@ -29,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<AuthProvider>().getUserDetailsById();
+      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.certificate);
     });
 
   }

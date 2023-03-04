@@ -1,23 +1,56 @@
 import 'package:briskon/model/order/order_list_items.dart';
+import 'package:briskon/provider/enquiry_provider.dart';
 import 'package:briskon/utils.dart';
 import 'package:briskon/view/common/app_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class OrderListScreen extends StatelessWidget {
+class OrderListScreen extends StatefulWidget {
   const OrderListScreen({Key? key}) : super(key: key);
 
   @override
+  State<OrderListScreen> createState() => _OrderListScreenState();
+}
+
+class _OrderListScreenState extends State<OrderListScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+      context.read<EnquiryProvider>().getLeadListByUser();
+
+    });
+
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    final enquiryProvider = context.watch<EnquiryProvider>();
+
+    final res = enquiryProvider.resGetLeadListByUser;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("My Orders"),
       ),
-      body: ListView.builder(itemBuilder: (context, index) {
+      body: ResultBuilder(result: res, child: ListView.builder(itemBuilder: (context, index) {
 
         bool isSelecting = false;
 
         print(isSelecting);
+
+        final enquiry = res.response?.data?[index];
+
+        final orderDetails = [
+          OrderListItem(order: 0, text: "${enquiry?.orderDate?.toDDMMMYYYY}", icon: "ic-order-calender.svg"),
+          OrderListItem(order: 1, text: enquiry?.finalTotal ?? "", icon: "ic-order-currency.svg"),
+          OrderListItem(order: 3, text: "${enquiry?.totalTons ?? ""} Tons", icon: "ic-order-currency.svg")
+        ];
 
         return StatefulBuilder(
           builder: (context, setState) {
@@ -42,7 +75,7 @@ class OrderListScreen extends StatelessWidget {
                 });
               },
               onTap: () {
-                Navigator.of(context).pushNamed(kOrderDetailsRoute);
+                Navigator.of(context).pushNamed(kOrderDetailsRoute,arguments: enquiry?.id);
               },
               child: AnimatedContainer(
                 duration: const Duration(
@@ -68,7 +101,7 @@ class OrderListScreen extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: Text("Name of Product", style: TextStyleConstant.textStyleFont500FontSize19),
+                          child: Text(enquiry?.orderCode ?? "", style: TextStyleConstant.textStyleFont500FontSize19),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(vertical: 5.sp,horizontal: 10.sp),
@@ -76,7 +109,7 @@ class OrderListScreen extends StatelessWidget {
                               color: kSuccessOrderColor,
                               borderRadius: BorderRadius.circular(15.sp)
                           ),
-                          child: Text("Delivered", style: TextStyleConstant.textStyleFont500FontSize13.copyWith(color: Colors.white)),
+                          child: Text(enquiry?.status?.name ?? "", style: TextStyleConstant.textStyleFont500FontSize13.copyWith(color: Colors.white)),
                         )
                       ],
                     ),
@@ -85,7 +118,7 @@ class OrderListScreen extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 4,
+                      itemCount: orderDetails.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           mainAxisSpacing: 1,
                           crossAxisSpacing: 1,
@@ -93,7 +126,7 @@ class OrderListScreen extends StatelessWidget {
                           crossAxisCount: SizerUtil.gridCount),
                       itemBuilder: (context, index) {
 
-                        final order = OrderListItem.values[index];
+                        final order = orderDetails[index];
 
                         return Row(
                           children: [
@@ -110,7 +143,7 @@ class OrderListScreen extends StatelessWidget {
           },
         );
 
-      },itemCount: 2, padding: EdgeInsets.symmetric(vertical: 15.sp,horizontal: 15.sp),),
+      },itemCount: res.response?.data?.length ?? 0, padding: EdgeInsets.symmetric(vertical: 15.sp,horizontal: 15.sp),))
     );
   }
 }

@@ -115,13 +115,12 @@ class AuthProvider extends BaseNotifier implements IAuthProvider {
           return false;
         }
 
-        repo.saveNewUser(userID: "${res.data?.userId ?? ""}", token: res.data?.authToken ?? "");
+        await repo.saveNewUser(userID: "${res.data?.userId ?? ""}", token: res.data?.authToken ?? "");
 
         UserStorage.shared.isLogin = true;
+
         isLogin = true;
-
         getUserDetailsById();
-
         return true;
       } else {
         throw res.message ?? "Something Went Wrong.";
@@ -174,7 +173,7 @@ class AuthProvider extends BaseNotifier implements IAuthProvider {
         isLogin = true;
 
         await repo.saveNewUser(userID: "${res.data?.member?.id ?? ""}", token: res.data?.member?.authToken ?? "");
-
+        getUserDetailsById();
         notifyListeners();
 
       } else {

@@ -21,3 +21,33 @@ class Result<T> {
   }
 }
 
+class ResultBuilder extends StatelessWidget {
+  const ResultBuilder({Key? key, required this.result, required this.child}) : super(key: key);
+
+  final Result result;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+
+    switch(result.state) {
+      case Status.loading:
+        return const Center(child: LoadingSmall());
+      case Status.completed:
+        return child;
+      case Status.error:
+        return Center(child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(result.msg ?? ""),
+        ));
+      case Status.unAuthorised:
+        return Center(child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(result.msg ?? ""),
+        ));
+      default:
+        return const SizedBox.shrink();
+    }
+
+  }
+}

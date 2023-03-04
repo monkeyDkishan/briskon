@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class KYCField extends StatelessWidget {
-  const KYCField({Key? key, required this.hint, this.inputFormatters, this.keyboardType, this.controller, this.maxLines}) : super(key: key);
+  const KYCField({Key? key, required this.hint, this.inputFormatters, this.keyboardType, this.controller, this.maxLines, this.focusNode}) : super(key: key);
 
   final String hint;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
   final TextEditingController? controller;
   final int? maxLines;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +28,7 @@ class KYCField extends StatelessWidget {
           ]
       ),
       child: TextField(
+        focusNode: focusNode,
         maxLines: maxLines ?? 1,
         controller: controller,
         keyboardType: keyboardType,
