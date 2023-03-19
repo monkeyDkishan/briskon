@@ -16,7 +16,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.5
   url_launcher: ^6.1.4
-  webview_flutter: ^3.0.4
+  webview_flutter: ^4.0.6
   shared_preferences: ^2.0.15
   animations: ^2.0.3
   image_picker: ^0.8.5+3

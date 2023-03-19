@@ -17,10 +17,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  int bannerIndex = 0;
-
-  final List<int> bannerIndexName = [0,1,2,3];
-
   int selectedMenu = -1;
 
   @override
@@ -30,7 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<AuthProvider>().getUserDetailsById();
-      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.certificate);
+      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.banner);
+      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.brochure);
+      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.productQuality);
     });
 
   }
@@ -38,6 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
 
+    final banners = context.watch<DocumentsProvider>().banners;
+    final productQualities = context.watch<DocumentsProvider>().productQualities;
+    final brochures = context.watch<DocumentsProvider>().brochures;
 
     return Scaffold(
       appBar: AppBar(
@@ -53,12 +54,14 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               SizedBox(height: 20.sp),
 
+              if(banners.isNotEmpty)
               CarouselSlider.builder(
-                itemCount: bannerIndexName.length,
+                itemCount: banners.length,
                 itemBuilder: (context, index, realIndex) {
+                  final banner = banners[index];
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                      child: Image.asset("assets/images/banner-$index.png",fit: BoxFit.cover,));
+                      child: Image.network(banner.imageURL,fit: BoxFit.fitWidth,width: 85.w,));
                 },
                 options: CarouselOptions(height: 170.sp, viewportFraction: 0.9,autoPlay: true),
               ),

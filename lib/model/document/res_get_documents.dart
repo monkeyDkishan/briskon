@@ -1,4 +1,6 @@
 
+import 'package:briskon/services/server_config.dart';
+
 class ResGetDocuments {
   ResGetDocuments({
     this.status,
@@ -8,12 +10,12 @@ class ResGetDocuments {
 
   int? status;
   String? message;
-  List<Datum>? data;
+  List<Documents>? data;
 
   factory ResGetDocuments.fromJson(Map<String, dynamic> json) => ResGetDocuments(
     status: json["status"],
     message: json["message"],
-    data: json["data"] == null ? [] : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+    data: json["data"] == null ? [] : List<Documents>.from(json["data"]!.map((x) => Documents.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -23,8 +25,8 @@ class ResGetDocuments {
   };
 }
 
-class Datum {
-  Datum({
+class Documents {
+  Documents({
     this.id,
     this.type,
     this.path,
@@ -38,7 +40,9 @@ class Datum {
   String? fileType;
   String? title;
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  String get imageURL => "${ServerConfig.imageBaseURL}/$path";
+
+  factory Documents.fromJson(Map<String, dynamic> json) => Documents(
     id: json["id"],
     type: json["type"],
     path: json["path"],

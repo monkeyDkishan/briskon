@@ -49,7 +49,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
         final orderDetails = [
           OrderListItem(order: 0, text: "${enquiry?.orderDate?.toDDMMMYYYY}", icon: "ic-order-calender.svg"),
           OrderListItem(order: 1, text: enquiry?.finalTotal ?? "", icon: "ic-order-currency.svg"),
-          OrderListItem(order: 3, text: "${enquiry?.totalTons ?? ""} Tons", icon: "ic-order-currency.svg")
+          OrderListItem(order: 3, text: "${enquiry?.totalTons ?? ""} Tons", icon: "ic-order-ton.svg")
         ];
 
         return StatefulBuilder(

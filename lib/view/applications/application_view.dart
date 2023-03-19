@@ -1,33 +1,46 @@
+import 'package:briskon/provider/documents_provider.dart';
 import 'package:briskon/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ApplicationView extends StatelessWidget {
+class ApplicationView extends StatefulWidget {
   ApplicationView({Key? key}) : super(key: key);
 
-  final images = [
-    "applications_dummy_0.jpg",
-    "applications_dummy_1.jpg",
-    "applications_dummy_2.jpg",
-  ];
+  @override
+  State<ApplicationView> createState() => _ApplicationViewState();
+}
 
-  final names = [
-    "Concrete reinforcement structure",
-    "High-rise building",
-    "Warehouses",
-  ];
+class _ApplicationViewState extends State<ApplicationView> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.application);
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
+
+    final applications = context.watch<DocumentsProvider>().applications;
+
     return Scaffold(
       appBar: AppBar(title: Text("Applications"),),
       body: ListView.builder(itemBuilder: (context, index) {
+
+        final application = applications[index];
 
         return AspectRatio(
           aspectRatio: 1.5,
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.asset("assets/images/${images[index]}",fit: BoxFit.cover),
+              Image.network(application.imageURL,fit: BoxFit.cover),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -46,13 +59,13 @@ class ApplicationView extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 5.sp,horizontal: 10.sp),
-                    child: Text(names[index],style: TextStyleConstant.textStyleFont500FontSize15,),
+                    child: Text(application.title ?? "",style: TextStyleConstant.textStyleFont500FontSize15,),
                   ))
             ],
           ),
         );
 
-      },itemCount: images.length,),
+      },itemCount: applications.length,),
     );
   }
 }

@@ -2,6 +2,7 @@ class ServerConfig {
 
   static var domain = "http://13.232.174.159";
   static var baseURL = "$domain/api/v1";
+  static var imageBaseURL = domain;
   static var sendOtp = "$baseURL/send_otp";
   static var verifyOtp = "$baseURL/verify_otp";
   static var register = "$baseURL/register";
