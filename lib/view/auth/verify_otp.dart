@@ -22,7 +22,7 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
 
   int time = 30;
 
-  final TextEditingController controller = TextEditingController();
+  TextEditingController? controller;
 
   Timer? timer;
 
@@ -33,11 +33,20 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
 
     setupTimer();
 
+    controller = TextEditingController();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final otp = context.read<AuthProvider>().resSendOtp.response?.data?.otp ?? 0;
+      controller?.text = "$otp";
+    });
+
+
+
   }
 
   @override
   dispose() {
-    controller.dispose();
+    controller?.dispose();
     super.dispose();
 
   }
@@ -125,7 +134,7 @@ class _VerifyOTPScreenState extends State<VerifyOTPScreen> {
                   AuthButton(title: "Verify OTP",onTap: () async {
 
                     try {
-                      final isLogin = await authProvider.verifyOTP(otp: controller.text);
+                      final isLogin = await authProvider.verifyOTP(otp: controller?.text ?? "");
                       timer?.cancel();
                       if(isLogin) {
                         Navigator.of(context).popUntil((route) => route.isFirst);

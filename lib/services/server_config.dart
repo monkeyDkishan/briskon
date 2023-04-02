@@ -15,5 +15,6 @@ class ServerConfig {
   static var updateKycDetails = "$baseURL/update_kyc_details";
   static var getKycDetails = "$baseURL/get_kyc_details";
   static var getDocList = "$baseURL/get_document_list_by_type";
+  static var contactUs = "$baseURL/get_contact_us";
 
 }

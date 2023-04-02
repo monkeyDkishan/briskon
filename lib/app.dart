@@ -34,7 +34,8 @@ Widget app(){
       AppProvider.auth,
       AppProvider.enquiry,
       AppProvider.kycProvider,
-      AppProvider.documentsProvider
+      AppProvider.documentsProvider,
+      AppProvider.settingsProvider
     ],
     child: Sizer(builder: (context, orientation, deviceType) {
       return MaterialApp(

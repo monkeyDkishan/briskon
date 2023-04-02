@@ -6,7 +6,9 @@ import 'package:briskon/utils.dart';
 import 'package:briskon/model/home/menu_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../repo/settings_repo.dart';
 import '../pdf_view/pdf_view.dart';
+import '../webview/web_view.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -16,7 +18,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   int selectedMenu = -1;
 
   @override
@@ -26,92 +27,121 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<AuthProvider>().getUserDetailsById();
-      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.banner);
-      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.brochure);
-      context.read<DocumentsProvider>().getDocumentsByType(type: DocumentTypes.productQuality);
-    });
+      context
+          .read<DocumentsProvider>()
+          .getDocumentsByType(type: DocumentTypes.banner);
+      context
+          .read<DocumentsProvider>()
+          .getDocumentsByType(type: DocumentTypes.brochure);
+      context
+          .read<DocumentsProvider>()
+          .getDocumentsByType(type: DocumentTypes.productQuality);
 
+      SettingsRepo().getContactUs();
+
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
     final banners = context.watch<DocumentsProvider>().banners;
-    final productQualities = context.watch<DocumentsProvider>().productQualities;
+    final productQualities =
+        context.watch<DocumentsProvider>().productQualities;
     final brochures = context.watch<DocumentsProvider>().brochures;
 
     return Scaffold(
       appBar: AppBar(
         leading: const SizedBox.shrink(),
-        title: SizedBox(
-          width: 98.sp,
-            height: 36.sp,
-            child: Assets.briskonLogo),
+        title: SizedBox(width: 98.sp, height: 36.sp, child: Assets.briskonLogo),
       ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
             children: [
               SizedBox(height: 20.sp),
-
-              if(banners.isNotEmpty)
-              CarouselSlider.builder(
-                itemCount: banners.length,
-                itemBuilder: (context, index, realIndex) {
-                  final banner = banners[index];
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                      child: Image.network(banner.imageURL,fit: BoxFit.fitWidth,width: 85.w,));
-                },
-                options: CarouselOptions(height: 170.sp, viewportFraction: 0.9,autoPlay: true),
-              ),
-
+              if (banners.isNotEmpty)
+                CarouselSlider.builder(
+                  itemCount: banners.length,
+                  itemBuilder: (context, index, realIndex) {
+                    final banner = banners[index];
+                    return ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.network(
+                          banner.imageURL,
+                          fit: BoxFit.fitWidth,
+                          width: 85.w,
+                        ));
+                  },
+                  options: CarouselOptions(
+                      height: 170.sp, viewportFraction: 0.9, autoPlay: true),
+                ),
               GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 15.sp, vertical: 15.sp),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 15.sp, vertical: 15.sp),
                 shrinkWrap: true,
                 itemCount: MenuModel.menus.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 6.sp,
-                  mainAxisSpacing: 6.sp,
-                  crossAxisCount: SizerUtil.gridCount,
-                  childAspectRatio: 181/140
-                ),
+                    crossAxisSpacing: 6.sp,
+                    mainAxisSpacing: 6.sp,
+                    crossAxisCount: SizerUtil.gridCount,
+                    childAspectRatio: 181 / 140),
                 itemBuilder: (context, index) {
-
-                  final menu = MenuModel.menus.firstWhere((element) => element.order == index);
+                  final menu = MenuModel.menus
+                      .firstWhere((element) => element.order == index);
 
                   final isSelected = selectedMenu == menu.order;
 
                   return InkWell(
                     splashColor: kPrimaryColor,
                     onTap: () {
+                      try {
+                        if (menu.route == "product_quality") {
+                          // if (productQualities.isEmpty) throw "No Product quality available.";
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const WebViewScreen(
+                                url: "https://www.briskontmt.com/product.html",
+                                title: "Product Quality"),
+                          ));
 
-                      if(menu.route == "product_quality") {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Product Quality"),));
-                        return;
-                      } else if(menu.route == "brochure") {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_quality.pdf", title: "Brochure"),));
-                        return;
-                      } else if(menu.route == "about_us") {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PDFViewer(asset: "assets/files/briskon_brochure.pdf", title: "About Us"),));
-                        return;
-                      }
+                          return;
+                        } else if (menu.route == "brochure") {
+                          if (brochures.isEmpty) throw "No brochure available.";
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => WebViewScreen(
+                                url: brochures.first.imageURL,
+                                title: "Brochure"),
+                          ));
+                          return;
+                        } else if (menu.route == "about_us") {
 
-                      if([kAddEnquiryRoute,kOrderListRoute].contains(menu.route)) {
-                        final auth = context.read<AuthProvider>();
-                        if(!auth.isLogin) {
-                          if(auth.isGuest) {
-                            Toaster.showMessage(context, msg: "Please Login to access this part of the section");
-                            Navigator.of(context).pushNamed(kLoginRoute,arguments: {
-                              "is_from_guest" : true
-                            });
-                            return;
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const WebViewScreen(
+                                url: "https://www.briskontmt.com/about.html",
+                                title: "About Us"),
+                          ));
+                          return;
+                        }
+
+                        if ([kAddEnquiryRoute, kOrderListRoute]
+                            .contains(menu.route)) {
+                          final auth = context.read<AuthProvider>();
+                          if (!auth.isLogin) {
+                            if (auth.isGuest) {
+                              Toaster.showMessage(context,
+                                  msg:
+                                      "Please Login to access this part of the section");
+                              Navigator.of(context).pushNamed(kLoginRoute,
+                                  arguments: {"is_from_guest": true});
+                              return;
+                            }
                           }
                         }
-                      }
 
-                      Navigator.of(context).pushNamed(menu.route);
+                        Navigator.of(context).pushNamed(menu.route);
+                      } catch (e) {
+                        Toaster.showMessage(context, msg: e.toString());
+                      }
                     },
                     onTapDown: (details) {
                       setState(() {
@@ -125,32 +155,30 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isSelected ? kPrimaryColor : Colors.white,
-                        border: Border.all(color: kFontGrayColor.withOpacity(0.25)),
-                        borderRadius: BorderRadius.circular(2),
-                        boxShadow: [
-                          if(isSelected)
-                          BoxShadow(
-                            color: kPrimaryColor.withOpacity(0.5),
-                            blurRadius: 15,
-                            spreadRadius: 1
-                          )
-                        ]
-                      ),
+                          color: isSelected ? kPrimaryColor : Colors.white,
+                          border: Border.all(
+                              color: kFontGrayColor.withOpacity(0.25)),
+                          borderRadius: BorderRadius.circular(2),
+                          boxShadow: [
+                            if (isSelected)
+                              BoxShadow(
+                                  color: kPrimaryColor.withOpacity(0.5),
+                                  blurRadius: 15,
+                                  spreadRadius: 1)
+                          ]),
                       child: Stack(
                         children: [
-
-                          if(isSelected)
-                          Padding(
-                            padding: EdgeInsets.only(top: 15.sp,right: 20.sp),
-                            child: Image.asset(
+                          if (isSelected)
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(top: 15.sp, right: 20.sp),
+                              child: Image.asset(
                                 "assets/images/img-menu-grid-steel-bar.png",
                                 fit: BoxFit.contain,
-                              colorBlendMode: BlendMode.darken,
-                              color: kPrimaryColor,
+                                colorBlendMode: BlendMode.darken,
+                                color: kPrimaryColor,
+                              ),
                             ),
-                          ),
-
                           Padding(
                             padding: EdgeInsets.all(15.sp),
                             child: Column(
@@ -170,8 +198,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         style: TextStyleConstant
                                             .textStyleFont400FontSize16
                                             .copyWith(
-                                          color: isSelected ? Colors.white : kFontGrayColor,
-                                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                          color: isSelected
+                                              ? Colors.white
+                                              : kFontGrayColor,
+                                          fontWeight: isSelected
+                                              ? FontWeight.w600
+                                              : FontWeight.w400,
                                           fontSize: isSelected ? 18.sp : 16.sp,
                                         )))
                               ],
