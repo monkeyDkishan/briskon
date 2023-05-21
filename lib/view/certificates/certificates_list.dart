@@ -1,6 +1,5 @@
 import 'package:briskon/provider/documents_provider.dart';
 import 'package:briskon/utils.dart';
-import 'package:briskon/view/pdf_view/pdf_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

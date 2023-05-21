@@ -11,11 +11,3 @@ void main() async {
 
   runApp(app());
 }
-
-
-// Guest user handle inside app [SATURDAY] done
-// None KYC user handle inside app [SATURDAY]
-// List orders [SATURDAY]
-// Details orders [SUNDAY]
-// Banners [SUNDAY]
-// App Testing with admin panel [SUNDAY]

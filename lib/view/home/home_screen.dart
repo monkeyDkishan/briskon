@@ -7,7 +7,6 @@ import 'package:briskon/model/home/menu_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../repo/settings_repo.dart';
-import '../pdf_view/pdf_view.dart';
 import '../webview/web_view.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -97,13 +96,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () {
                       try {
                         if (menu.route == "product_quality") {
-                          // if (productQualities.isEmpty) throw "No Product quality available.";
+                          if (productQualities.isEmpty) throw "No Product quality available.";
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const WebViewScreen(
-                                url: "https://www.briskontmt.com/product.html",
+                            builder: (context) => WebViewScreen(
+                                url: productQualities.first.imageURL,
                                 title: "Product Quality"),
                           ));
 
+
+                          //"https://www.briskontmt.com/product.html",
                           return;
                         } else if (menu.route == "brochure") {
                           if (brochures.isEmpty) throw "No brochure available.";
@@ -128,11 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           final auth = context.read<AuthProvider>();
                           if (!auth.isLogin) {
                             if (auth.isGuest) {
-                              Toaster.showMessage(context,
-                                  msg:
-                                      "Please Login to access this part of the section");
-                              Navigator.of(context).pushNamed(kLoginRoute,
-                                  arguments: {"is_from_guest": true});
+
+                              Alert.show(context, title: "Hello Guest!", message: "Please Login to access this part of the section",primary: "Yes",secondary: "Cancel",onPrimaryAction: () {
+                                Navigator.of(context).pushNamed(kLoginRoute,
+                                    arguments: {"is_from_guest": true});
+                              });
+
                               return;
                             }
                           }

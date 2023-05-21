@@ -44,6 +44,7 @@ Widget app(){
         debugShowMaterialGrid: false,
         theme: ThemeData(
           fontFamily: kRegularFonts,
+          useMaterial3: true,
           appBarTheme: AppBarTheme(
               backgroundColor: Colors.transparent,
               elevation: 0,

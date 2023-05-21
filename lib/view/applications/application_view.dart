@@ -30,7 +30,7 @@ class _ApplicationViewState extends State<ApplicationView> {
     final applications = context.watch<DocumentsProvider>().applications;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Applications"),),
+      appBar: AppBar(title: const Text("Applications"),),
       body: ListView.builder(itemBuilder: (context, index) {
 
         final application = applications[index];

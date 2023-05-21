@@ -29,9 +29,9 @@ class MyAccount extends StatelessWidget {
                   final auth = context.read<AuthProvider>();
                   if(!auth.isLogin) {
                     if(auth.isGuest) {
-                      Toaster.showMessage(context, msg: "Please Login to access this part of the section");
-                      Navigator.of(context).pushNamed(kLoginRoute,arguments: {
-                        "is_from_guest" : true
+                      Alert.show(context, title: "Hello Guest!", message: "Please Login to access this part of the section",primary: "Yes",secondary: "Cancel",onPrimaryAction: () {
+                        Navigator.of(context).pushNamed(kLoginRoute,
+                            arguments: {"is_from_guest": true});
                       });
                       return;
                     }
@@ -44,9 +44,9 @@ class MyAccount extends StatelessWidget {
                   final auth = context.read<AuthProvider>();
                   if(!auth.isLogin) {
                     if(auth.isGuest) {
-                      Toaster.showMessage(context, msg: "Please Login to access this part of the section");
-                      Navigator.of(context).pushNamed(kLoginRoute,arguments: {
-                        "is_from_guest" : true
+                      Alert.show(context, title: "Hello Guest!", message: "Please Login to access this part of the section",primary: "Yes",secondary: "Cancel",onPrimaryAction: () {
+                        Navigator.of(context).pushNamed(kLoginRoute,
+                            arguments: {"is_from_guest": true});
                       });
                       return;
                     }
@@ -90,6 +90,7 @@ class MyAccount extends StatelessWidget {
             );
 
           },itemCount: MyAccountListModel.list.length,padding: EdgeInsets.all(15.sp)),
+          if(false)
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,

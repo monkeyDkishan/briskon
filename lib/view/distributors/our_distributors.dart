@@ -1,8 +1,29 @@
+import 'package:briskon/provider/documents_provider.dart';
 import 'package:briskon/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class OurDistributorsView extends StatelessWidget {
+class OurDistributorsView extends StatefulWidget {
   const OurDistributorsView({Key? key}) : super(key: key);
+
+  @override
+  State<OurDistributorsView> createState() => _OurDistributorsViewState();
+}
+
+class _OurDistributorsViewState extends State<OurDistributorsView> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+
+      context.read<DocumentsProvider>().getDistributorList();
+
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -37,3 +37,7 @@ part 'utils/styles.dart';
 part 'utils/base_notifier.dart';
 
 part 'utils/custom_image_picker.dart';
+
+part 'utils/alert.dart';
+
+part 'utils/custom_button.dart';
